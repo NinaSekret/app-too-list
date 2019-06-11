@@ -12,7 +12,6 @@ interface Props {
 
 export class FilterTasks extends PureComponent<Props> {
   setFilterAllHandler = () => {
-    console.log(this.props.number);
     this.props.setFilter("all");
   };
 

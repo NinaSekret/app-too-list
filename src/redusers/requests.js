@@ -49,13 +49,23 @@ export default function reducer(
           {
             id: action.payload.id,
             day: action.payload.day,
-            text: action.payload.text
+            text: action.payload.text,
+            label: action.payload.label,
+            isDone: action.payload.isDone
           }
         ],
         isloading: false
       };
     case getType(actions.addTaskError):
       return { ...state, isloading: false, error: action.payload };
+    case getType(actions.setEditTaskAction):
+    case getType(actions.setСloseEditTaskAction):
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload ? { ...task, isEdit: !task.isEdit } : task
+        )
+      };
     default:
       return state;
   }

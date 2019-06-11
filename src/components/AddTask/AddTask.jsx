@@ -1,11 +1,16 @@
 // @flow
 import React, { PureComponent } from "react";
-import "./AddTask.scss";
-import type { Filter } from "../../interfaces/Filter";
+import { connect } from "react-redux";
+import { Dispatch, bindActionCreators } from "redux";
+import { addTask } from "../../actions/requests";
+import { Task } from "../../interfaces";
 
-interface Props {
-  //addTask: (id: number, text: string, day: string) => void;
+import "./AddTask.scss";
+
+interface OwnProps {
+  data: Task;
 }
+type Props = OwnProps & DispatchFromProps & StateFromProps;
 
 interface State {
   day: string;
@@ -13,27 +18,25 @@ interface State {
   title: string;
   label: string;
   isDone: boolean;
-  isEdit: boolean;
   isAddTask: boolean;
 }
 
-export default class AddTask extends PureComponent<Props, State> {
+class AddTask extends PureComponent<Props, State> {
   state = {
     day: "",
     text: "",
     title: "",
     label: "",
     isDone: false,
-    isEdit: false,
     isAddTask: false
   };
 
   onBtnClickHandler = (e: any) => {
     e.preventDefault();
-    //const { day, title, text } = this.state;
-    //const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+    const { day, title, text, label, isDone } = this.state;
+    const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
 
-    //this.props.addTask(id, day, title, text);
+    this.props.addTask(id, day, title, text, label, isDone);
 
     this.setState({
       day: "",
@@ -82,59 +85,72 @@ export default class AddTask extends PureComponent<Props, State> {
             {isAddTask ? `Скрыть` : `+ Добавить таску`}
           </button>
         </div>
-        {isAddTask && (
-          <form className="add">
-            <label className="add__label" htmlFor="day">
-              Дата
-            </label>
-            <input
-              type="datetime-local"
-              onChange={this.handleDateChange}
-              className="add__day"
-              value={day}
-            />
-            <label className="add__label" htmlFor="title">
-              Заголовок
-            </label>
-            <input
-              type="text"
-              onChange={this.handleTitleChange}
-              className="add__title"
-              value={title}
-            />
-            <label className="add__label" htmlFor="text">
-              Текст заметки
-            </label>
-            <textarea
-              onChange={this.handleTextChange}
-              className="add__text"
-              value={text}
-            />
-            <div className="add__selectorLabel">
-              <h3 className="add__selectorLabel__title">
-                Выберите статус задачи
-              </h3>
-              <select
-                className="add__selectorlabel__select"
-                value={label}
-                onChange={this.handleLabelChange}
-              >
-                <option value="usally">Обычная</option>
-                <option value="important">Важная</option>
-                <option value="veryImportant">Очень важная</option>
-              </select>
-            </div>
-            <button
-              className="add__sentButton"
-              suppressHydrationWarning
-              onClick={this.onBtnClickHandler}
-              disabled={!this.validate()}
+        <form className="add">
+          <label className="add__label" htmlFor="day">
+            Дата
+          </label>
+          <input
+            type="datetime-local"
+            onChange={this.handleDateChange}
+            className="add__day"
+            value={day}
+          />
+          <label className="add__label" htmlFor="title">
+            Заголовок
+          </label>
+          <input
+            type="text"
+            onChange={this.handleTitleChange}
+            className="add__title"
+            value={title}
+          />
+          <label className="add__label" htmlFor="text">
+            Текст заметки
+          </label>
+          <textarea
+            onChange={this.handleTextChange}
+            className="add__text"
+            value={text}
+          />
+          <div className="add__selectorLabel">
+            <h3 className="add__selectorLabel__title">
+              Выберите статус задачи
+            </h3>
+            <select
+              className="add__selectorlabel__select"
+              value={label}
+              onChange={this.handleLabelChange}
             >
-              Добавить
-            </button>
-          </form>
-        )}
+              <option value="usally">Обычная</option>
+              <option value="important">Важная</option>
+              <option value="veryImportant">Очень важная</option>
+            </select>
+          </div>
+          <button
+            className="add__sentButton"
+            suppressHydrationWarning
+            onClick={this.onBtnClickHandler}
+            disabled={!this.validate()}
+          >
+            Добавить
+          </button>
+        </form>
       </>
     );
   }
 }
+
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      addTask
+    },
+    dispatch
+  );
+
+type DispatchFromProps = ReturnType<typeof mapDispatchToProps>;
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(AddTask);

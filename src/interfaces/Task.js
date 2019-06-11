@@ -7,4 +7,5 @@ export interface Task {
   text: string;
   label: string;
   isDone: boolean;
+  isEdit: boolean;
 }

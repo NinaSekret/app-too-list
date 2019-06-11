@@ -1,22 +1,36 @@
 //@flow
 
-import * as React from "react";
+import React, { PureComponent } from "react";
 import { ToDo } from "../ToDo/ToDo";
 import { Task } from "../../interfaces";
 import { connect } from "react-redux";
 import { Dispatch, bindActionCreators } from "redux";
-import { getTasks, deleteTask } from "../../actions/requests";
+import { getTasks, deleteTask, setEditTask } from "../../actions/requests";
 import "./TasksList.scss";
+import AddTask from "../AddTask/AddTask";
 
-interface IOwnProps {}
-type IProps = IOwnProps & StateFromProps & DispatchFromProps;
+interface OwnProps {}
 
-class TasksList extends React.Component<IProps> {
+interface State {
+  isAddTask: boolean;
+}
+type Props = OwnProps & StateFromProps & DispatchFromProps;
+
+class TasksList extends PureComponent<Props, State> {
+  state = {
+    isAddTask: false
+  };
+
   componentDidMount() {
     this.props.getTasks();
   }
 
-  getVisibleTasks() {
+  onBtnClickNewTask = () => {
+    const { isAddTask } = this.state;
+    this.setState({ isAddTask: !isAddTask });
+  };
+
+  getVisibleTasks(): any {
     const { filter, tasks } = this.props;
 
     switch (filter) {
@@ -32,16 +46,37 @@ class TasksList extends React.Component<IProps> {
   }
 
   renderTasksList = () => {
-    const { tasks } = this.props;
-
-    if (tasks.length) {
+    if (this.getVisibleTasks().length) {
       return this.getVisibleTasks().map((item: Task) => (
-        <ToDo key={item.id} data={item} deleteTask={this.props.deleteTask} />
+        <ToDo
+          key={item.id}
+          data={item}
+          deleteTask={this.props.deleteTask}
+          setEditTask={this.props.setEditTask}
+        />
       ));
     }
 
     return <p>Нет задач</p>;
   };
+
+  // renderAddTask = () => {
+  //   const { isAddTask } = this.state;
+  //   let found = this.getVisibleTasks().some(task => {
+  //     return task.isEdit === true;
+  //   });
+
+  //   // return !found ? (
+  //   //   <>
+  //   //     <div className="add__newButton-wrapper">
+  //   //       <button className="add__newButton" onClick={this.onBtnClickNewTask}>
+  //   //         {isAddTask ? `Скрыть` : `+ Добавить таску`}
+  //   //       </button>
+  //   //     </div>
+  //   //     <AddTask />
+  //   //   </>
+  //   // ) : null;
+  // };
 
   render() {
     const { tasks } = this.props;
@@ -71,7 +106,8 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       getTasks,
-      deleteTask
+      deleteTask,
+      setEditTask
     },
     dispatch
   );

@@ -27,6 +27,23 @@ export const addTaskPending = createStandardAction("ADD_TASK_REQUEST")<void>();
 export const addTaskSuccess = createStandardAction("ADD_TASK_SUCCESS")<Task>();
 export const addTaskError = createStandardAction("ADD_TASK_ERROR")<string>();
 
+export const setEditTaskAction = createStandardAction("SET_EDIT_TASK")<Task>();
+export const setСloseEditTaskAction = createStandardAction(
+  "SET_CLOSE_EDIT_TASK"
+)<Task>();
+
+export function setEditTask(id: number) {
+  return (dispatch: Dispatch<any>) => {
+    dispatch(setEditTaskAction(id));
+  };
+}
+
+export function setCloseEditTask(id: number) {
+  return (dispatch: Dispatch<any>) => {
+    dispatch(setСloseEditTaskAction(id));
+  };
+}
+
 export function getTasks() {
   return (dispatch: Dispatch<any>) => {
     dispatch(getTasksPending());
