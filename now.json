@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "todo-list",
+  "name": "todo-list1",
   "builds": [
     {
       "src": "package.json",
