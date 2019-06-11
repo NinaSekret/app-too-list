@@ -7,7 +7,6 @@ import { connect } from "react-redux";
 import { Dispatch, bindActionCreators } from "redux";
 import { getTasks, deleteTask, setEditTask } from "../../actions/requests";
 import "./TasksList.scss";
-import AddTask from "../AddTask/AddTask";
 
 interface OwnProps {}
 
@@ -59,24 +58,6 @@ class TasksList extends PureComponent<Props, State> {
 
     return <p>Нет задач</p>;
   };
-
-  // renderAddTask = () => {
-  //   const { isAddTask } = this.state;
-  //   let found = this.getVisibleTasks().some(task => {
-  //     return task.isEdit === true;
-  //   });
-
-  //   // return !found ? (
-  //   //   <>
-  //   //     <div className="add__newButton-wrapper">
-  //   //       <button className="add__newButton" onClick={this.onBtnClickNewTask}>
-  //   //         {isAddTask ? `Скрыть` : `+ Добавить таску`}
-  //   //       </button>
-  //   //     </div>
-  //   //     <AddTask />
-  //   //   </>
-  //   // ) : null;
-  // };
 
   render() {
     const { tasks } = this.props;

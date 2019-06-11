@@ -40,12 +40,12 @@ export function createTaskRequest(
   isDone: boolean
 ) {
   return request<Task>("/task", "POST", {
-    id: id,
-    day: day,
-    title: title,
-    text: text,
-    label: label,
-    isDone: isDone
+    id,
+    day,
+    title,
+    text,
+    label,
+    isDone
   });
 }
 
@@ -54,16 +54,18 @@ export function updateTaskRequest(
   day: string,
   title: string,
   text: string,
+  label: string,
   isDone: boolean,
-  label: string
+  timeIsDone: string
 ) {
   return request<Task>(`/bulk/task?where=id=${id}`, "PUT", {
-    id: id,
-    day: day,
-    title: title,
-    text: text,
-    label: label,
-    isDone: isDone
+    id,
+    day,
+    title,
+    text,
+    label,
+    isDone,
+    timeIsDone
   });
 }
 

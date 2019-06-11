@@ -40,6 +40,7 @@ export default function reducer(
     case getType(actions.deleteTaskError):
       return { ...state, isloading: false, error: action.payload };
     case getType(actions.addTaskPending):
+    case getType(actions.updateTaskPending):
       return { ...state, isloading: true };
     case getType(actions.addTaskSuccess):
       return {
@@ -50,16 +51,33 @@ export default function reducer(
             id: action.payload.id,
             day: action.payload.day,
             text: action.payload.text,
+            title: action.payload.title,
             label: action.payload.label,
             isDone: action.payload.isDone
           }
         ],
         isloading: false
       };
+    case getType(actions.updateTaskSuccess):
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload
+            ? {
+                ...task,
+                day: action.payload.day,
+                text: action.payload.text,
+                title: action.payload.title,
+                label: action.payload.label,
+                isDone: action.payload.isDone
+              }
+            : task
+        )
+      };
     case getType(actions.addTaskError):
+    case getType(actions.updateTaskError):
       return { ...state, isloading: false, error: action.payload };
     case getType(actions.setEditTaskAction):
-    case getType(actions.setСloseEditTaskAction):
       return {
         ...state,
         tasks: state.tasks.map(task =>

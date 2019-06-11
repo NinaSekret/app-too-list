@@ -1,6 +1,5 @@
 // @flow
-import { connect } from "react-redux";
-import { Dispatch, bindActionCreators } from "redux";
+
 import React, { PureComponent } from "react";
 import type { Filter } from "../../interfaces/Filter";
 import "./FilterTasks.scss";

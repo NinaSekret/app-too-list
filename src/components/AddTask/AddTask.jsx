@@ -2,15 +2,16 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { Dispatch, bindActionCreators } from "redux";
-import { addTask } from "../../actions/requests";
+import { addTask, editTask } from "../../actions/requests";
 import { Task } from "../../interfaces";
+import moment from "moment";
 
 import "./AddTask.scss";
 
 interface OwnProps {
-  data: Task;
+  data?: Task;
 }
-type Props = OwnProps & DispatchFromProps & StateFromProps;
+type Props = OwnProps & DispatchFromProps;
 
 interface State {
   day: string;
@@ -26,17 +27,42 @@ class AddTask extends PureComponent<Props, State> {
     day: "",
     text: "",
     title: "",
-    label: "",
+    label: "usally",
     isDone: false,
     isAddTask: false
   };
 
-  onBtnClickHandler = (e: any) => {
-    e.preventDefault();
+  componentDidMount() {
+    if (this.props.data) {
+      const { day, text, title, label, isDone, timeIsDone } = this.props.data;
+      this.setState({
+        day,
+        text,
+        title,
+        label,
+        isDone
+      });
+    }
+  }
+
+  onBtnClickEditTask = () => {
+    if (this.props.data) {
+      const { id } = this.props.data;
+      const { day, title, text, label, isDone } = this.state;
+      const timeIsDone = isDone ? moment().format("DD.MM.YYYY HH:mm") : "";
+
+      this.props.editTask(id, day, text, title, label, isDone, timeIsDone);
+    }
+  };
+
+  onBtnClickAddTask = () => {
     const { day, title, text, label, isDone } = this.state;
     const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
 
-    this.props.addTask(id, day, title, text, label, isDone);
+    const formatedDay = moment(day, "YYYY-MM-DDTHH:mm").format(
+      "DD.MM.YYYY HH:mm"
+    );
+    this.props.addTask(id, formatedDay, text, title, label, isDone);
 
     this.setState({
       day: "",
@@ -51,24 +77,22 @@ class AddTask extends PureComponent<Props, State> {
     this.setState({ isAddTask: !isAddTask });
   };
 
-  handleDateChange = (e: SyntheticInputEvent<HTMLInputElement>): void => {
-    this.setState({ day: e.currentTarget.value });
-  };
+  handleInputChange = (
+    event: SyntheticInputEvent<HTMLInputElement & HTMLSelectElement>
+  ) => {
+    const { isDone } = this.state;
+    const target = event.currentTarget;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    const name = target.name;
 
-  handleTitleChange = (e: SyntheticInputEvent<HTMLInputElement>) => {
-    this.setState({ title: e.currentTarget.value });
-  };
-
-  handleTextChange = (e: SyntheticInputEvent<HTMLTextAreaElement>) => {
-    this.setState({ text: e.currentTarget.value });
-  };
-
-  handleLabelChange = (e: SyntheticInputEvent<HTMLSelectElement>): void => {
-    this.setState({ label: e.currentTarget.value });
+    this.setState({
+      [name]: value
+    });
   };
 
   validate = () => {
     const { text, title, label } = this.state;
+    if (!text || !title || !label) return false;
     if (text.trim() && title.trim() && label.trim()) {
       return true;
     }
@@ -76,65 +100,88 @@ class AddTask extends PureComponent<Props, State> {
   };
 
   render() {
-    const { day, text, title, label, isAddTask } = this.state;
+    const { day, text, title, label, isAddTask, isDone } = this.state;
 
+    const isReallyEditing = Boolean(this.props.data && this.props.data.isEdit);
+    const shouldRenderForm = isReallyEditing || isAddTask;
     return (
       <>
-        <div className="add__newButton-wrapper">
-          <button className="add__newButton" onClick={this.onBtnClickNewTask}>
-            {isAddTask ? `Скрыть` : `+ Добавить таску`}
-          </button>
-        </div>
-        <form className="add">
-          <label className="add__label" htmlFor="day">
-            Дата
-          </label>
-          <input
-            type="datetime-local"
-            onChange={this.handleDateChange}
-            className="add__day"
-            value={day}
-          />
-          <label className="add__label" htmlFor="title">
-            Заголовок
-          </label>
-          <input
-            type="text"
-            onChange={this.handleTitleChange}
-            className="add__title"
-            value={title}
-          />
-          <label className="add__label" htmlFor="text">
-            Текст заметки
-          </label>
-          <textarea
-            onChange={this.handleTextChange}
-            className="add__text"
-            value={text}
-          />
-          <div className="add__selectorLabel">
-            <h3 className="add__selectorLabel__title">
-              Выберите статус задачи
-            </h3>
-            <select
-              className="add__selectorlabel__select"
-              value={label}
-              onChange={this.handleLabelChange}
-            >
-              <option value="usally">Обычная</option>
-              <option value="important">Важная</option>
-              <option value="veryImportant">Очень важная</option>
-            </select>
+        {!isReallyEditing && (
+          <div className="add__newButton-wrapper">
+            <button className="add__newButton" onClick={this.onBtnClickNewTask}>
+              {isAddTask ? `Скрыть` : `+ Добавить таску`}
+            </button>
           </div>
-          <button
-            className="add__sentButton"
-            suppressHydrationWarning
-            onClick={this.onBtnClickHandler}
-            disabled={!this.validate()}
-          >
-            Добавить
-          </button>
-        </form>
+        )}
+        {shouldRenderForm && (
+          <form className="add">
+            <label className="add__label">Дата</label>
+            <input
+              type="datetime-local"
+              name="day"
+              onChange={this.handleInputChange}
+              className="add__day"
+              value={day}
+            />
+            <label className="add__label">Заголовок</label>
+            <input
+              type="text"
+              name="title"
+              onChange={this.handleInputChange}
+              className="add__title"
+              value={title}
+            />
+            <label className="add__label">Текст заметки</label>
+            <textarea
+              name="text"
+              onChange={this.handleInputChange}
+              className="add__text"
+              value={text}
+            />
+            <div className="add__selectorLabel">
+              <h3 className="add__selectorLabel__title">
+                Выберите статус задачи
+              </h3>
+              <select
+                name="label"
+                className="add__selectorLabel__select"
+                value={label}
+                onChange={this.handleInputChange}
+              >
+                <option value="usally">Обычная</option>
+                <option value="important">Важная</option>
+                <option value="veryImportant">Очень важная</option>
+              </select>
+            </div>
+            {isReallyEditing && (
+              <>
+                <label className="add__label">Отметить как выполнено: </label>
+                <input
+                  type="checkbox"
+                  name="isDone"
+                  checked={isDone}
+                  onChange={this.handleInputChange}
+                />
+                <button
+                  className="add__sentButton"
+                  onClick={this.onBtnClickEditTask}
+                  disabled={!this.validate()}
+                >
+                  Сохранить
+                </button>
+              </>
+            )}
+            {!isReallyEditing && (
+              <button
+                className="add__sentButton"
+                onClick={this.onBtnClickAddTask}
+                disabled={!this.validate()}
+              >
+                Добавить
+              </button>
+            )}
+          </form>
+        )}
       </>
     );
   }
@@ -143,7 +190,8 @@ class AddTask extends PureComponent<Props, State> {
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
-      addTask
+      addTask,
+      editTask
     },
     dispatch
   );

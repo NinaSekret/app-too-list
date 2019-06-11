@@ -6,6 +6,7 @@ export interface Task {
   title: string;
   text: string;
   label: string;
+  timeIsDone: string;
   isDone: boolean;
   isEdit: boolean;
 }
