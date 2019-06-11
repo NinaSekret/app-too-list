@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "app-too-list",
+  "name": "todo-list",
   "builds": [
     {
       "src": "package.json",
