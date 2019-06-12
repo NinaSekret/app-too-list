@@ -54,7 +54,7 @@ export class FilterTasks extends PureComponent<Props, State> {
               value="all"
               name="setFilter"
               checked={selected === 'all'}
-              onClick={this.handleInputChange}
+              onChange={this.handleInputChange}
             />
             Все
           </label>
@@ -64,7 +64,7 @@ export class FilterTasks extends PureComponent<Props, State> {
               value="usally"
               name="setFilter"
               checked={selected === 'usally'}
-              onClick={this.handleInputChange}
+              onChange={this.handleInputChange}
             />
             Обычные
           </label>
@@ -74,7 +74,7 @@ export class FilterTasks extends PureComponent<Props, State> {
               value="important"
               name="setFilter"
               checked={selected === 'important'}
-              onClick={this.handleInputChange}
+              onChange={this.handleInputChange}
             />
             Важные
           </label>
@@ -84,7 +84,7 @@ export class FilterTasks extends PureComponent<Props, State> {
               value="veryImportant"
               name="setFilter"
               checked={selected === 'veryImportant'}
-              onClick={this.handleInputChange}
+              onChange={this.handleInputChange}
             />
             Очень важные
           </label>
