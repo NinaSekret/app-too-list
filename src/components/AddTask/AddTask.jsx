@@ -23,14 +23,17 @@ interface State {
 }
 
 class AddTask extends PureComponent<Props, State> {
-  state = {
-    day: '',
-    text: '',
-    title: '',
-    label: 'usally',
-    isDone: false,
-    isAddTask: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      day: '',
+      text: '',
+      title: '',
+      label: 'usally',
+      isDone: false,
+      isAddTask: false,
+    };
+  }
 
   componentDidMount() {
     if (this.props.data) {

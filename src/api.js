@@ -1,25 +1,24 @@
 // @flow
 
-import { Task } from "./interfaces";
+import { Task } from './interfaces';
 
-const requestUrl =
-  "https://api.backendless.com/F6F74BDD-8418-BDB2-FF45-F0970046CD00/8CC32AE1-F8FE-8FAB-FF52-FBB2899E1300/data";
+const requestUrl = 'https://api.backendless.com/F6F74BDD-8418-BDB2-FF45-F0970046CD00/8CC32AE1-F8FE-8FAB-FF52-FBB2899E1300/data';
 
 function checkStatus(response: Response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
 
-  throw new Error("Server error: " + response.statusText);
+  throw new Error(`Server error: ${response.statusText}`);
 }
 
 function request<object>(
   url: string,
   method: string,
-  body?: object
+  body?: object,
 ): Promise<any> {
   const options: any = {
-    method
+    method,
   };
 
   if (body) {
@@ -37,15 +36,15 @@ export function createTaskRequest(
   title: string,
   text: string,
   label: string,
-  isDone: boolean
+  isDone: boolean,
 ) {
-  return request<Task>("/task", "POST", {
+  return request<Task>('/task', 'POST', {
     id,
     day,
     title,
     text,
     label,
-    isDone
+    isDone,
   });
 }
 
@@ -56,23 +55,23 @@ export function updateTaskRequest(
   text: string,
   label: string,
   isDone: boolean,
-  timeIsDone: string
+  timeIsDone: string,
 ) {
-  return request<Task>(`/bulk/task?where=id=${id}`, "PUT", {
+  return request<Task>(`/bulk/task?where=id=${id}`, 'PUT', {
     id,
     day,
     title,
     text,
     label,
     isDone,
-    timeIsDone
+    timeIsDone,
   });
 }
 
 export function deleteTaskRequest(id: number) {
-  return request(`/bulk/task?where=id=${id}`, "DELETE");
+  return request(`/bulk/task?where=id=${id}`, 'DELETE');
 }
 
 export function getTasksRequest() {
-  return request<Task[]>("/task?sortBy=day%20desc", "GET");
+  return request<Task[]>('/task?sortBy=day%20desc', 'GET');
 }

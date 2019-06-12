@@ -71,7 +71,7 @@ export class ToDo extends React.PureComponent<IProps> {
               {!isDone && (
                 <button type="submit" className="task__btn" onClick={this.onBtnClickEditTask}>
                   Редактировать
-            </button>
+              </button>
               )}
             </div>
           )}
