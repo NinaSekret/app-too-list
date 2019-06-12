@@ -1,3 +1,3 @@
 // @flow
 
-export type Filter = "all" | "usally" | "important" | "veryImportant";
+export type Filter = 'all' | 'usally' | 'important' | 'veryImportant';

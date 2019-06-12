@@ -1,9 +1,9 @@
 // @flow
 
-import { Filter } from "../interfaces";
-import * as actions from "../actions/filters";
+import { Filter } from '../interfaces';
+import * as actions from '../actions/filters';
 
-import { getType, ActionType } from "typesafe-actions";
+import { getType, ActionType } from 'typesafe-actions';
 
 type IAction = ActionType<typeof actions>;
 
@@ -12,7 +12,7 @@ type IInitialState = {
 };
 
 const initialState: IInitialState = {
-  filter: "all"
+  filter: 'all'
 };
 
 export default function reducer(

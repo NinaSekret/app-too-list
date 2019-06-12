@@ -1,12 +1,12 @@
 // @flow
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
-import { Dispatch, bindActionCreators } from "redux";
-import { addTask, editTask } from "../../actions/requests";
-import { Task } from "../../interfaces";
-import moment from "moment";
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import { Dispatch, bindActionCreators } from 'redux';
+import moment from 'moment';
+import { addTask, editTask } from '../../actions/requests';
+import { Task } from '../../interfaces';
 
-import "./AddTask.scss";
+import './AddTask.scss';
 
 interface OwnProps {
   data?: Task;
@@ -24,23 +24,25 @@ interface State {
 
 class AddTask extends PureComponent<Props, State> {
   state = {
-    day: "",
-    text: "",
-    title: "",
-    label: "usally",
+    day: '',
+    text: '',
+    title: '',
+    label: 'usally',
     isDone: false,
-    isAddTask: false
+    isAddTask: false,
   };
 
   componentDidMount() {
     if (this.props.data) {
-      const { day, text, title, label, isDone, timeIsDone } = this.props.data;
+      const { day, text, title, label, isDone } = this.props.data;
       this.setState({
-        day,
+        day: moment(day, 'DD.MM.YYYY HH:mm').format(
+          'YYYY-MM-DDTHH:mm',
+        ),
         text,
         title,
         label,
-        isDone
+        isDone,
       });
     }
   }
@@ -48,27 +50,34 @@ class AddTask extends PureComponent<Props, State> {
   onBtnClickEditTask = () => {
     if (this.props.data) {
       const { id } = this.props.data;
-      const { day, title, text, label, isDone } = this.state;
-      const timeIsDone = isDone ? moment().format("DD.MM.YYYY HH:mm") : "";
+      const {
+        day, title, text, label, isDone
+      } = this.state;
+      const timeIsDone = isDone ? moment().format('DD.MM.YYYY HH:mm') : '';
+      const editDay = moment(day, 'YYYY-MM-DDTHH:mm').format(
+        'DD.MM.YYYY HH:mm',
+      );
 
-      this.props.editTask(id, day, text, title, label, isDone, timeIsDone);
+      this.props.editTask(id, editDay, text, title, label, isDone, timeIsDone);
     }
   };
 
   onBtnClickAddTask = () => {
-    const { day, title, text, label, isDone } = this.state;
+    const {
+      day, title, text, label, isDone
+    } = this.state;
     const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
 
-    const formatedDay = moment(day, "YYYY-MM-DDTHH:mm").format(
-      "DD.MM.YYYY HH:mm"
+    const formatedDay = moment(day, 'YYYY-MM-DDTHH:mm').format(
+      'DD.MM.YYYY HH:mm',
     );
     this.props.addTask(id, formatedDay, text, title, label, isDone);
 
     this.setState({
-      day: "",
-      text: "",
-      title: "",
-      label: ""
+      day: '',
+      text: '',
+      title: '',
+      label: '',
     });
   };
 
@@ -78,15 +87,14 @@ class AddTask extends PureComponent<Props, State> {
   };
 
   handleInputChange = (
-    event: SyntheticInputEvent<HTMLInputElement & HTMLSelectElement>
+    event: SyntheticInputEvent<HTMLInputElement & HTMLSelectElement>,
   ) => {
-    const { isDone } = this.state;
     const target = event.currentTarget;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const { name } = target;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -101,15 +109,16 @@ class AddTask extends PureComponent<Props, State> {
 
   render() {
     const { day, text, title, label, isAddTask, isDone } = this.state;
+    const { data } = this.props;
 
-    const isReallyEditing = Boolean(this.props.data && this.props.data.isEdit);
+    const isReallyEditing = Boolean(data && data.isEdit);
     const shouldRenderForm = isReallyEditing || isAddTask;
     return (
       <>
         {!isReallyEditing && (
           <div className="add__newButton-wrapper">
-            <button className="add__newButton" onClick={this.onBtnClickNewTask}>
-              {isAddTask ? `Скрыть` : `+ Добавить таску`}
+            <button type="submit" className="add__newButton" onClick={this.onBtnClickNewTask}>
+              {isAddTask ? 'Скрыть' : '+ Добавить таску'}
             </button>
           </div>
         )}
@@ -163,6 +172,7 @@ class AddTask extends PureComponent<Props, State> {
                   onChange={this.handleInputChange}
                 />
                 <button
+                  type="submit"
                   className="add__sentButton"
                   onClick={this.onBtnClickEditTask}
                   disabled={!this.validate()}
@@ -173,6 +183,7 @@ class AddTask extends PureComponent<Props, State> {
             )}
             {!isReallyEditing && (
               <button
+                type="submit"
                 className="add__sentButton"
                 onClick={this.onBtnClickAddTask}
                 disabled={!this.validate()}
@@ -187,18 +198,17 @@ class AddTask extends PureComponent<Props, State> {
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      addTask,
-      editTask
-    },
-    dispatch
-  );
+const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators(
+  {
+    addTask,
+    editTask,
+  },
+  dispatch,
+);
 
 type DispatchFromProps = ReturnType<typeof mapDispatchToProps>;
 
 export default connect(
   null,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(AddTask);

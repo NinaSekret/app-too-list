@@ -7,6 +7,10 @@
   background: #fff;
   box-shadow: 0 3px 11px rgba(125, 128, 147, 0.23);
 
+  &._isOverdueTask{
+    color: red;
+  }
+
   &__day {
     margin: 0 5px 4px 0;
     font-weight: bold;
@@ -16,7 +20,6 @@
     margin: 5px 0 20px;
     font-size: 14px;
     line-height: 21px;
-    color: #606578;
   }
 
   &__btn {
@@ -24,7 +27,7 @@
     padding: 10px 15px;
     border: 1px solid rgba(125, 128, 147, 0.23);
     outline: none;
-    font: 15px/1 "Roboto", sans-serif;
+    font: 15px/1 'Roboto', sans-serif;
 
     &:hover {
       background-color: #e6afa7;

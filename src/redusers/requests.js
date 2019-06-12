@@ -1,8 +1,8 @@
 // @flow
-import { Task } from "../interfaces";
-import * as actions from "../actions/requests";
+import { Task } from '../interfaces';
+import * as actions from '../actions/requests';
 
-import { getType, ActionType } from "typesafe-actions";
+import { getType, ActionType } from 'typesafe-actions';
 
 type IAction = ActionType<typeof actions>;
 
@@ -64,13 +64,13 @@ export default function reducer(
         tasks: state.tasks.map(task =>
           task.id === action.payload
             ? {
-                ...task,
-                day: action.payload.day,
-                text: action.payload.text,
-                title: action.payload.title,
-                label: action.payload.label,
-                isDone: action.payload.isDone
-              }
+              ...task,
+              day: action.payload.day,
+              text: action.payload.text,
+              title: action.payload.title,
+              label: action.payload.label,
+              isDone: action.payload.isDone
+            }
             : task
         )
       };

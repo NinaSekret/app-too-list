@@ -1,9 +1,9 @@
 // @flow
-import * as React from "react";
-import { Task } from "../../interfaces";
-import AddTask from "../AddTask/AddTask";
-import moment from "moment";
-import "./ToDo.scss";
+import * as React from 'react';
+import moment from 'moment';
+import { Task } from '../../interfaces';
+import AddTask from '../AddTask/AddTask';
+import './ToDo.scss';
 
 interface IProps {
   key: number;
@@ -12,13 +12,16 @@ interface IProps {
   setEditTask: (id: number) => void;
 }
 
+// eslint-disable-next-line import/prefer-default-export
 export class ToDo extends React.PureComponent<IProps> {
   onBtnClickDeleteTask = () => {
-    this.props.deleteTask(this.props.data.id);
+    const { deleteTask, data } = this.props;
+    deleteTask(data.id);
   };
 
   onBtnClickEditTask = () => {
-    this.props.setEditTask(this.props.data.id);
+    const { setEditTask, data } = this.props;
+    setEditTask(data.id);
   };
 
   render() {
@@ -29,36 +32,49 @@ export class ToDo extends React.PureComponent<IProps> {
       text,
       isEdit,
       isDone,
-      timeIsDone
+      timeIsDone,
     } = this.props.data;
 
     const isOverdueTask = moment(day).isBefore(
-      moment().format("DD.MM.YYYY HH:mm")
+      moment().format('DD.MM.YYYY HH:mm'),
     );
+
+    const stylesTask = [
+      'task',
+      isOverdueTask ? '_isOverdueTask' : null,
+    ].filter(x => x).join(' ');
 
     return (
       <>
         {isEdit ? (
           <AddTask data={this.props.data} />
         ) : (
-          <div className="task">
-            <p className="task__day">{day}</p>
-            <p className="task__title">{title}</p>
-            <p className="task__text">{text}</p>
-            <p className="task__label">{label}</p>
-            <p className="task__timeIsDone">
-              Время когда была сделана задача: {timeIsDone}
-            </p>
-            <button className="task__btn" onClick={this.onBtnClickDeleteTask}>
-              Удалить
+            <div className={stylesTask}>
+              {day !== 'Invalid date' && <p className="task__day">{day}</p>}
+              <p className="task__title">{title}</p>
+              <p className="task__text">{text}</p>
+              <p className="task__label">
+                Важность:
+              {' '}
+                {label}
+              </p>
+              {isDone && (
+                <p className="task__timeIsDone">
+                  Задача была закрыта:
+                {' '}
+                  {timeIsDone}
+                </p>
+              )}
+              <button type="submit" className="task__btn" onClick={this.onBtnClickDeleteTask}>
+                Удалить
             </button>
-            {!isDone && (
-              <button className="task__btn" onClick={this.onBtnClickEditTask}>
-                Редактировать
-              </button>
-            )}
-          </div>
-        )}
+              {!isDone && (
+                <button type="submit" className="task__btn" onClick={this.onBtnClickEditTask}>
+                  Редактировать
+            </button>
+              )}
+            </div>
+          )}
       </>
     );
   }

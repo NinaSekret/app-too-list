@@ -1,14 +1,14 @@
-//@flow
+// @flow
 
-import React, { PureComponent } from "react";
-import { ToDo } from "../ToDo/ToDo";
-import { Task } from "../../interfaces";
-import { connect } from "react-redux";
-import { Dispatch, bindActionCreators } from "redux";
-import { getTasks, deleteTask, setEditTask } from "../../actions/requests";
-import "./TasksList.scss";
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import { Dispatch, bindActionCreators } from 'redux';
+import { ToDo } from '../ToDo/ToDo';
+import { Task } from '../../interfaces';
+import { getTasks, deleteTask, setEditTask } from '../../actions/requests';
+import './TasksList.scss';
 
-interface OwnProps {}
+interface OwnProps { }
 
 interface State {
   isAddTask: boolean;
@@ -17,7 +17,7 @@ type Props = OwnProps & StateFromProps & DispatchFromProps;
 
 class TasksList extends PureComponent<Props, State> {
   state = {
-    isAddTask: false
+    isAddTask: false,
   };
 
   componentDidMount() {
@@ -33,14 +33,16 @@ class TasksList extends PureComponent<Props, State> {
     const { filter, tasks } = this.props;
 
     switch (filter) {
-      case "all":
+      case 'all':
         return tasks;
-      case "usally":
-        return tasks.filter((task: Task) => task.label === "usally");
-      case "important":
-        return tasks.filter((task: Task) => task.label === "important");
-      case "veryImportant":
-        return tasks.filter((task: Task) => task.label === "veryImportant");
+      case 'usally':
+        return tasks.filter((task: Task) => task.label === 'usally');
+      case 'important':
+        return tasks.filter((task: Task) => task.label === 'important');
+      case 'veryImportant':
+        return tasks.filter((task: Task) => task.label === 'veryImportant');
+      default:
+        return tasks;
     }
   }
 
@@ -66,8 +68,10 @@ class TasksList extends PureComponent<Props, State> {
       <div className="tasksList">
         {this.renderTasksList()}
         {tasks.length > 0 && (
-          <strong className={"tasksList__count"}>
-            Всего записей: {this.getVisibleTasks().length}
+          <strong className="tasksList__count">
+            Всего записей:
+            {' '}
+            {this.getVisibleTasks().length}
           </strong>
         )}
       </div>
@@ -75,28 +79,25 @@ class TasksList extends PureComponent<Props, State> {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    tasks: state.requests.tasks,
-    isloading: state.requests.isloading,
-    filter: state.filters.filter
-  };
-};
+const mapStateToProps = state => ({
+  tasks: state.requests.tasks,
+  isloading: state.requests.isloading,
+  filter: state.filters.filter,
+});
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      getTasks,
-      deleteTask,
-      setEditTask
-    },
-    dispatch
-  );
+const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators(
+  {
+    getTasks,
+    deleteTask,
+    setEditTask,
+  },
+  dispatch,
+);
 
 type DispatchFromProps = ReturnType<typeof mapDispatchToProps>;
 type StateFromProps = ReturnType<typeof mapStateToProps>;
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(TasksList);
